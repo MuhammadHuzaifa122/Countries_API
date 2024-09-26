@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import Countriesdata from "../Countriesdata";
+import CountriesListShimmer from "./CountriesListShimmer";
 import CountryCard from "./CountryCard";
 
 export default function CountriesList({ query }) {
@@ -13,24 +13,28 @@ export default function CountriesList({ query }) {
   }, []);
   return (
     <>
-      <div className="countries-container">
-        {countriesData
-          .filter((country) =>
-            country.name.common.toLowerCase().includes(query)
-          )
-          .map((country) => {
-            return (
-              <CountryCard
-                name={country.name.common}
-                flag={country.flags.svg}
-                population={country.population}
-                region={country.region}
-                capital={country.capital?.[0]}
-                key={country.name.common}
-              />
-            );
-          })}
-      </div>
+      {!countriesData.length ? (
+        <CountriesListShimmer />
+      ) : (
+        <div className="countries-container">
+          {countriesData
+            .filter((country) =>
+              country.name.common.toLowerCase().includes(query)
+            )
+            .map((country) => {
+              return (
+                <CountryCard
+                  name={country.name.common}
+                  flag={country.flags.svg}
+                  population={country.population}
+                  region={country.region}
+                  capital={country.capital?.[0]}
+                  key={country.name.common}
+                />
+              );
+            })}
+        </div>
+      )}
     </>
   );
 }
