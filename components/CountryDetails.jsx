@@ -1,45 +1,57 @@
 import React, { useEffect, useState } from "react";
 import "./CountryDetail.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 export default function CountryDetails() {
   const params = useParams();
+  const {state} = useLocation();
   const countryName = params.country;
   const [countryData, setcountryData] = useState(null);
 
   const [notFound, setnotFound] = useState(false);
 
+  function updateCountryData (data){
+    setcountryData({
+      name: data.name.common,
+      nativeName: Object.values(data.name.nativeName)[0].common,
+      population: data.population,
+      region: data.region,
+      subregion: data.subregion,
+      capital: data.capital,
+      tld: data.tld,
+      currencies: Object.values(data.currencies)
+        .map((currency) => currency.name)
+        .join(", "),
+      languages: Object.values(data.languages).join(", "),
+      flags: data.flags.svg,
+      borders: [],
+    })
+    if (!data.borders) {
+      data.borders = [];
+    }
+    Promise.all(data.borders.map((border) => {
+      return fetch(`https://restcountries.com/v3.1/alpha/${border}`)
+       .then((res) => res.json())
+       .then(([borderCountry])=> borderCountry.name.common)
+   })).then((borders) =>{
+    setTimeout(() => {
+      setcountryData((prevState) => ({...prevState, borders: borders}))
+    })
+    
+   })
+  }
+
   useEffect(() => {
+
+    if (state) {
+      updateCountryData(state);
+      return
+    }
+
     fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
       .then((res) => res.json())
       .then(([data]) => {
-        setcountryData({
-          name: data.name.common,
-          nativeName: Object.values(data.name.nativeName)[0].common,
-          population: data.population,
-          region: data.region,
-          subregion: data.subregion,
-          capital: data.capital,
-          tld: data.tld,
-          currencies: Object.values(data.currencies)
-            .map((currency) => currency.name)
-            .join(", "),
-          languages: Object.values(data.languages).join(", "),
-          flags: data.flags.svg,
-          borders: [],
-        })
-        if (!data.borders) {
-          data.borders = [];
-        }
-        Promise.all(data.borders.map((border) => {
-          return fetch(`https://restcountries.com/v3.1/alpha/${border}`)
-           .then((res) => res.json())
-           .then(([borderCountry])=> borderCountry.name.common)
-       })).then((borders) =>{
-        setcountryData((prevState) => ({...prevState, borders: borders}))
-        console.log(borders);
-        
-       })
+        updateCountryData(data);
       })
       .catch((err) => {
         setnotFound(true);

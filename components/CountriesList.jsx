@@ -30,6 +30,7 @@ export default function CountriesList({ query }) {
                   region={country.region}
                   capital={country.capital?.[0]}
                   key={country.name.common}
+                  data={country}
                 />
               );
             })}
