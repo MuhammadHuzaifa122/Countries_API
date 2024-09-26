@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./CountryDetail.css";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function CountryDetails() {
   const params = useParams();
   const countryName = params.country;
   const [countryData, setcountryData] = useState(null);
+
   const [notFound, setnotFound] = useState(false);
 
   useEffect(() => {
@@ -25,14 +26,26 @@ export default function CountryDetails() {
             .join(", "),
           languages: Object.values(data.languages).join(", "),
           flags: data.flags.svg,
-          //   borders: data.borders,
-        });
+          borders: [],
+        })
+        if (!data.borders) {
+          data.borders = [];
+        }
+        Promise.all(data.borders.map((border) => {
+          return fetch(`https://restcountries.com/v3.1/alpha/${border}`)
+           .then((res) => res.json())
+           .then(([borderCountry])=> borderCountry.name.common)
+       })).then((borders) =>{
+        setcountryData((prevState) => ({...prevState, borders: borders}))
+        console.log(borders);
+        
+       })
       })
       .catch((err) => {
         setnotFound(true);
-      });
-  }, []);
-
+      }); 
+  }, [countryName]); // We are providing countryName as a dependency because our country name gets changed when we click on any other country on the list
+ 
   if (notFound) {
     return <div>Country Not Found</div>;
   }
@@ -42,7 +55,7 @@ export default function CountryDetails() {
   ) : (
     <main>
       <div className="country-details-container">
-        <span className="back-button"  onClick={()=>history.back()}>
+        <span className="back-button" onClick={() => history.back()}>
           <i className="fa-solid fa-arrow-left"></i>&nbsp; Back
         </span>
         <div className="country-details">
@@ -85,9 +98,14 @@ export default function CountryDetails() {
                 <span className="languages"></span>
               </p>
             </div>
-            <div className="border-countries">
+            {countryData.borders.length !== 0 && <div className="border-countries">
               <b>Border Countries: </b>&nbsp;
-            </div>
+              {countryData.borders.map((border) => 
+                <Link key={border} to={`/${border}`}>
+                  {border}
+                </Link>
+              )}
+            </div>}
           </div>
         </div>
       </div>
