@@ -1,0 +1,1 @@
+In this project I have used the Rest API for fetching the countries information and then showing each country information on a card. Morever if a user clicks on the country on the specefic card it will re-direct the user to another page where more country details will be shown to him. 
