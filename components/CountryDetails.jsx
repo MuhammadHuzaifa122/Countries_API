@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./CountryDetail.css";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useOutletContext, useParams } from "react-router-dom";
 
 export default function CountryDetails() {
-  const params = useParams();
-  const {state} = useLocation();
+  const [isDark] = useOutletContext(); //feature of react router 
+  const params = useParams(); //feature of react router 
+  const {state} = useLocation(); //feature of react router 
   const countryName = params.country;
   const [countryData, setcountryData] = useState(null);
 
@@ -65,7 +66,7 @@ export default function CountryDetails() {
   return countryData === null ? (
     "Loading....."
   ) : (
-    <main>
+    <main className={`${isDark ? 'dark' : ''}`}>
       <div className="country-details-container">
         <span className="back-button" onClick={() => history.back()}>
           <i className="fa-solid fa-arrow-left"></i>&nbsp; Back
