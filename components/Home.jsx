@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SearchBar from "./SearchBar";
 import Dropdown from "./Dropdown";
 import CountriesList from "./CountriesList";
-import { useOutletContext } from "react-router-dom";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 export default function Home() {
   const [query, setQuery] = useState('')
-  const [isDark] = useOutletContext()
+  const [isDark] = useContext(ThemeContext)
   return (
     <main className={`${isDark ? 'dark' : ''}`}>
         <div className="search-filter-container">
