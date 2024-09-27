@@ -1,8 +1,8 @@
-
 import { useTheme } from "../hooks/useTheme";
 
+
 export default function Header() {
-  const [isDark] = useTheme()
+  const [isDark, setIsDark] = useTheme()
 
   return (
     <header className={`header-container ${isDark ? "dark" : ""}`}>
@@ -13,7 +13,7 @@ export default function Header() {
         <p
           className="theme-changer"
           onClick={() => {
-            setisDark(!isDark);
+            setIsDark(!isDark);
             localStorage.setItem("isDarkMode", !isDark);
           }}
         >
