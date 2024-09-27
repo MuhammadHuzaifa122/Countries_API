@@ -62,7 +62,8 @@ a {
     max-width: 1200px;
     margin-top: 16px;
     display: flex;
-    gap: 64px;
+    /* grid-template-coloumns: repeat(auto-fill, minmax(250px, 1fr)); */
+    gap: 32px;
     flex-wrap: wrap;
     margin-inline: auto;
     justify-content: space-between;

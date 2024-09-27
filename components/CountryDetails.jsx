@@ -13,17 +13,17 @@ export default function CountryDetails() {
   const [notFound, setnotFound] = useState(false);
   function updateCountryData (data){
     setcountryData({
-      name: data.name.common,
-      nativeName: Object.values(data.name.nativeName)[0].common,
+      name: data.name.common || data.name,
+      nativeName: Object.values(data.name.nativeName || {})[0]?.common,
       population: data.population,
       region: data.region,
       subregion: data.subregion,
       capital: data.capital,
       tld: data.tld,
-      currencies: Object.values(data.currencies)
+      currencies: Object.values(data.currencies || {})
         .map((currency) => currency.name)
         .join(", "),
-      languages: Object.values(data.languages).join(", "),
+      languages: Object.values(data.languages || {}).join(", "),
       flags: data.flags.svg,
       borders: [],
     })
@@ -77,7 +77,7 @@ export default function CountryDetails() {
             <h1>{countryData.name}</h1>
             <div className="details-text">
               <p>
-                <b>Native Name: {countryData.nativeName}</b>
+                <b>Native Name: {countryData.nativeName || countryData.name}</b>
                 <span className="native-name"></span>
               </p>
               <p>
@@ -95,7 +95,7 @@ export default function CountryDetails() {
                 <span className="sub-region"></span>
               </p>
               <p>
-                <b>Capital: {countryData.capital.join(", ")}</b>
+                <b>Capital: {countryData.capital?.join(", ")}</b>
                 <span className="capital"></span>
               </p>
               <p>
